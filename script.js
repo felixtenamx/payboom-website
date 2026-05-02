@@ -856,18 +856,43 @@ function setupContactForm() {
     status.textContent = 'Enviando…';
 
     const data = new FormData(form);
+    // Client-side sanitization and limits
+    const sanitize = (v, max) => (v || '').toString().trim().slice(0, max);
     const payload = {
       _subject: 'NUEVO LEAD POTENCIAL',
       _cc: 'sandro.haro@payboom.io',
       _template: 'table',
-      _captcha: 'false',
-      Nombre: data.get('nombre'),
-      Correo: data.get('correo'),
-      Telefono: data.get('telefono'),
-      Mensaje: data.get('mensaje'),
+      // leave _captcha to provider default so anti-spam can run
+      Nombre: sanitize(data.get('nombre'), 100),
+      Correo: sanitize(data.get('correo'), 254),
+      Telefono: sanitize(data.get('telefono'), 32),
+      Mensaje: sanitize(data.get('mensaje'), 2000),
     };
 
+    // Basic client-side rate limit: max 5 submissions per hour per browser
     try {
+      const KEY = 'payboom_cf_ts_v1';
+      const raw = localStorage.getItem(KEY);
+      const now = Date.now();
+      const windowMs = 60 * 60 * 1000; // 1 hour
+      const maxPerWindow = 5;
+      let arr = raw ? JSON.parse(raw) : [];
+      arr = arr.filter((ts) => now - ts < windowMs);
+      if (arr.length >= maxPerWindow) {
+        status.className = 'cf-status is-err';
+        status.textContent = 'Has enviado demasiadas solicitudes. Intenta más tarde.';
+        form.classList.remove('is-loading');
+        return;
+      }
+      arr.push(now);
+      localStorage.setItem(KEY, JSON.stringify(arr));
+    } catch (err) {
+      // ignore storage failures
+    }
+
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 10000);
       const res = await fetch('https://formsubmit.co/ajax/comercial@payboom.io', {
         method: 'POST',
         headers: {
@@ -875,7 +900,8 @@ function setupContactForm() {
           'Accept': 'application/json',
         },
         body: JSON.stringify(payload),
-      });
+        signal: controller.signal,
+      }).finally(() => clearTimeout(timeout));
 
       if (!res.ok) throw new Error('http ' + res.status);
       const json = await res.json().catch(() => ({}));
@@ -895,7 +921,11 @@ function setupContactForm() {
       }
     } catch (err) {
       status.className = 'cf-status is-err';
-      status.textContent = 'No se pudo enviar. Inténtalo de nuevo o escríbenos a comercial@payboom.io';
+      if (err.name === 'AbortError') {
+        status.textContent = 'La solicitud tardó demasiado. Inténtalo de nuevo.';
+      } else {
+        status.textContent = 'No se pudo enviar. Inténtalo de nuevo o escríbenos a comercial@payboom.io';
+      }
     } finally {
       form.classList.remove('is-loading');
     }
