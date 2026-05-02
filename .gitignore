@@ -1,0 +1,40 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+
+# Dependencias (por si añadís Node más adelante)
+node_modules/
+.cache/
+.parcel-cache/
+
+# Builds
+dist/
+build/
+out/
+
+# Variables de entorno (nunca commitear secretos)
+.env
+.env.local
+.env.*.local
+
+# Carpetas temporales
+.tmp/
+tmp/
