@@ -845,6 +845,58 @@ function setupContactForm() {
   const status = document.getElementById('cfStatus');
   const btn = form.querySelector('button[type="submit"]');
 
+  // reCAPTCHA (invisible) integration — lazy loaded when contact form is visible
+  const RECAPTCHA_SITE_KEY = 'REPLACE_WITH_RECAPTCHA_SITE_KEY';
+  let recaptchaWidgetId = null;
+  let recaptchaReady = false;
+  let recaptchaPendingResolve = null;
+
+  function loadReCaptcha() {
+    if (!RECAPTCHA_SITE_KEY || RECAPTCHA_SITE_KEY.includes('REPLACE')) return Promise.resolve(null);
+    if (recaptchaReady) return Promise.resolve(true);
+    return new Promise((resolve) => {
+      window.onRecaptchaLoad = () => {
+        const container = document.createElement('div');
+        container.id = 'recaptcha-container';
+        container.style.display = 'none';
+        document.body.appendChild(container);
+        try {
+          recaptchaWidgetId = grecaptcha.render('recaptcha-container', {
+            sitekey: RECAPTCHA_SITE_KEY,
+            size: 'invisible',
+            callback: (token) => {
+              if (recaptchaPendingResolve) { recaptchaPendingResolve(token); recaptchaPendingResolve = null; }
+            }
+          });
+          recaptchaReady = true;
+          resolve(true);
+        } catch (err) {
+          resolve(null);
+        }
+      };
+      const s = document.createElement('script');
+      s.src = 'https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit';
+      s.async = true; s.defer = true;
+      document.head.appendChild(s);
+    });
+  }
+
+  function getRecaptchaToken() {
+    if (!recaptchaReady || recaptchaWidgetId === null) return Promise.resolve(null);
+    return new Promise((resolve) => {
+      recaptchaPendingResolve = resolve;
+      try {
+        grecaptcha.execute(recaptchaWidgetId);
+      } catch (err) {
+        recaptchaPendingResolve = null; resolve(null);
+      }
+      // fallback timeout
+      setTimeout(() => {
+        if (recaptchaPendingResolve) { recaptchaPendingResolve(null); recaptchaPendingResolve = null; }
+      }, 10000);
+    });
+  }
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -871,6 +923,9 @@ function setupContactForm() {
 
     // Basic client-side rate limit: max 5 submissions per hour per browser
     try {
+      // attempt to include recaptcha token if available
+      const recToken = await getRecaptchaToken().catch(() => null);
+      if (recToken) payload['g-recaptcha-response'] = recToken;
       const KEY = 'payboom_cf_ts_v1';
       const raw = localStorage.getItem(KEY);
       const now = Date.now();
@@ -953,13 +1008,31 @@ function setupCookieBanner() {
 
 /* ---------- Init when DOM idle ---------- */
 function init() {
-  buildCardScene();
-  buildGlobeScene();
   setupContactForm();
   setupCookieBanner();
+  setupLazyInits();
 }
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', init);
 } else {
   init();
+}
+
+// Lazy init for heavy assets: Three.js canvases and reCAPTCHA
+function setupLazyInits() {
+  const card = document.getElementById('cardCanvas');
+  const globe = document.getElementById('globeCanvas');
+  const contact = document.getElementById('contactForm');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      const id = e.target.id;
+      if (id === 'cardCanvas') { buildCardScene(); obs.unobserve(e.target); }
+      if (id === 'globeCanvas') { buildGlobeScene(); obs.unobserve(e.target); }
+      if (id === 'contactForm') { try { if (typeof loadReCaptcha === 'function') loadReCaptcha(); } catch {} obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  if (card) obs.observe(card);
+  if (globe) obs.observe(globe);
+  if (contact) obs.observe(contact);
 }
