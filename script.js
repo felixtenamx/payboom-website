@@ -845,57 +845,59 @@ function setupContactForm() {
   const status = document.getElementById('cfStatus');
   const btn = form.querySelector('button[type="submit"]');
 
-  // reCAPTCHA (invisible) integration — lazy loaded when contact form is visible
-  const RECAPTCHA_SITE_KEY = 'REPLACE_WITH_RECAPTCHA_SITE_KEY';
-  let recaptchaWidgetId = null;
+  // reCAPTCHA v3 integration (grecaptcha.execute) — lazy loaded when contact form is visible
+  const RECAPTCHA_SITE_KEY = '6LcBF9ksAAAAAPSjhcoiHDZFYhumQU7ZfTm-Yfk9';
   let recaptchaReady = false;
-  let recaptchaPendingResolve = null;
 
   function loadReCaptcha() {
     if (!RECAPTCHA_SITE_KEY || RECAPTCHA_SITE_KEY.includes('REPLACE')) return Promise.resolve(null);
     if (recaptchaReady) return Promise.resolve(true);
     return new Promise((resolve) => {
-      window.onRecaptchaLoad = () => {
-        const container = document.createElement('div');
-        container.id = 'recaptcha-container';
-        container.style.display = 'none';
-        document.body.appendChild(container);
-        try {
-          recaptchaWidgetId = grecaptcha.render('recaptcha-container', {
-            sitekey: RECAPTCHA_SITE_KEY,
-            size: 'invisible',
-            callback: (token) => {
-              if (recaptchaPendingResolve) { recaptchaPendingResolve(token); recaptchaPendingResolve = null; }
-            }
-          });
-          recaptchaReady = true;
-          resolve(true);
-        } catch (err) {
-          resolve(null);
+      const checkReady = () => {
+        if (window.grecaptcha && typeof window.grecaptcha.execute === 'function') {
+          recaptchaReady = true; resolve(true); return;
         }
+        // small wait then check again (up to a short timeout)
       };
+
       const s = document.createElement('script');
-      s.src = 'https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit';
+      s.src = `https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`;
       s.async = true; s.defer = true;
+      s.onload = () => { setTimeout(checkReady, 50); };
+      s.onerror = () => { resolve(null); };
       document.head.appendChild(s);
+
+      // Safety fallback: wait up to 5s for grecaptcha to become available
+      const start = Date.now();
+      const poll = () => {
+        if (recaptchaReady) return;
+        if (window.grecaptcha && typeof window.grecaptcha.execute === 'function') { recaptchaReady = true; resolve(true); return; }
+        if (Date.now() - start > 5000) { resolve(null); return; }
+        setTimeout(poll, 120);
+      };
+      poll();
     });
   }
 
-  function getRecaptchaToken() {
-    if (!recaptchaReady || recaptchaWidgetId === null) return Promise.resolve(null);
+  function getRecaptchaToken(action = 'contact_form') {
+    if (!recaptchaReady || !window.grecaptcha || !RECAPTCHA_SITE_KEY) return Promise.resolve(null);
     return new Promise((resolve) => {
-      recaptchaPendingResolve = resolve;
+      let finished = false;
       try {
-        grecaptcha.execute(recaptchaWidgetId);
+        window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { action }).then((token) => {
+          finished = true; resolve(token || null);
+        }).catch(() => { finished = true; resolve(null); });
       } catch (err) {
-        recaptchaPendingResolve = null; resolve(null);
+        resolve(null);
+        return;
       }
       // fallback timeout
-      setTimeout(() => {
-        if (recaptchaPendingResolve) { recaptchaPendingResolve(null); recaptchaPendingResolve = null; }
-      }, 10000);
+        setTimeout(() => { if (!finished) resolve(null); }, 10000);
     });
   }
+
+    // expose helpers globally so other handlers (e.g. docs links) can reuse
+    try { window.__pb_loadReCaptcha = loadReCaptcha; window.__pb_getRecaptchaToken = getRecaptchaToken; } catch (err) {}
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -948,7 +950,7 @@ function setupContactForm() {
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 10000);
-      const res = await fetch('https://formsubmit.co/ajax/comercial@payboom.io', {
+      const res = await fetch('/server/lead.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1011,6 +1013,7 @@ function init() {
   setupContactForm();
   setupCookieBanner();
   setupLazyInits();
+  try { setupDocsCaptcha(); } catch (err) {}
 }
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', init);
@@ -1035,4 +1038,40 @@ function setupLazyInits() {
   if (card) obs.observe(card);
   if (globe) obs.observe(globe);
   if (contact) obs.observe(contact);
+}
+
+// Add reCAPTCHA check for links/buttons that lead to the documentation
+function setupDocsCaptcha() {
+  const DOC_HOST = 'docs.payboom.io';
+  const loadReCaptcha = window.__pb_loadReCaptcha || (() => Promise.resolve(null));
+  const getRecaptchaToken = window.__pb_getRecaptchaToken || (() => Promise.resolve(null));
+
+  document.addEventListener('click', async (e) => {
+    const a = e.target.closest('a');
+    if (!a || !a.href) return;
+    let url;
+    try { url = new URL(a.href, location.href); } catch (err) { return; }
+    if (url.hostname !== DOC_HOST) return;
+
+    // Intercept and perform recaptcha check before navigation
+    e.preventDefault();
+    // ensure grecaptcha script is loaded
+    await loadReCaptcha().catch(() => null);
+    const token = await getRecaptchaToken('docs_click').catch(() => null);
+
+    // Proceed with navigation regardless of token availability (fallback),
+    // but prefer to only navigate if a token was obtained.
+    const target = a.target || '_self';
+    const openLink = () => {
+      if (target === '_blank') window.open(a.href, '_blank', 'noopener');
+      else window.location.href = a.href;
+    };
+
+    if (token) {
+      openLink();
+    } else {
+      // small delay to avoid surprising UX; then open
+      setTimeout(openLink, 250);
+    }
+  }, true);
 }

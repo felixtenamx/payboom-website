@@ -34,6 +34,11 @@ out/
 .env
 .env.local
 .env.*.local
+.env.development.local
+
+#php keys
+config.php
+config.example.php
 
 # Carpetas temporales
 .tmp/
