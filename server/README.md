@@ -1,10 +1,12 @@
 Server-side reCAPTCHA verification and lead proxy
 
 Files
+
 - `lead.php` — POST endpoint that verifies reCAPTCHA v3 tokens, rate-limits per IP, and forwards validated leads to formsubmit.co.
 - `config.example.php` — example config/env notes.
 
 Setup
+
 1. Copy `config.example.php` to `config.php` or set environment variables on your host:
 
 ```bash
@@ -32,6 +34,34 @@ curl -X POST http://localhost:8000/lead.php \
 ```
 
 Notes
+
 - The endpoint requires `RECAPTCHA_SECRET` to be set. It uses the public v3 site key on the client; the secret is used server-side for verification.
 - Forwarding currently uses formsubmit.co; change `$FORMSUBMIT_URL` in `lead.php` if you want a different destination.
 - Keep secrets out of the repo and use your hosting provider's environment variable feature.
+
+Enterprise notes
+
+- For reCAPTCHA Enterprise use the `lead_enterprise.php` endpoint. This requires the Google Cloud PHP client dependencies installed via Composer and application credentials.
+- Place your service-account JSON on the server and set:
+
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS="/path/to/service-account.json"
+export RECAPTCHA_PROJECT="green-antonym-495318-v8"
+```
+
+Install dependencies (in `server/`):
+
+```bash
+cd server
+composer install
+```
+
+Run the local dev server for testing (example):
+
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS="/full/path/to/client_secret.json"
+export RECAPTCHA_PROJECT="green-antonym-495318-v8"
+php -S localhost:8001 -t .
+```
+
+Test page: http://localhost:8001/test_recaptcha.html
