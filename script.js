@@ -778,11 +778,9 @@ function buildGlobeScene() {
   // Cursor follow GLOBAL — el globo reacciona al cursor desde cualquier parte
   const mouse = { x: 0, y: 0, tx: 0, ty: 0, hover: false };
   const onMove = (e) => {
-    // posición del cursor relativa al canvas (no a la viewport)
     const r = canvas.getBoundingClientRect();
     const cx = r.left + r.width / 2;
     const cy = r.top  + r.height / 2;
-    // distancia normalizada al centro del canvas (no clampada)
     mouse.tx = ((e.clientX - cx) / Math.max(window.innerWidth,  600)) * 1.4;
     mouse.ty = ((e.clientY - cy) / Math.max(window.innerHeight, 400)) * 1.2;
     mouse.hover = true;
@@ -795,13 +793,11 @@ function buildGlobeScene() {
     mouse.x += (mouse.tx - mouse.x) * 0.07;
     mouse.y += (mouse.ty - mouse.y) * 0.07;
 
-    // rotación constante + parallax notable con el cursor
     globe.rotation.y += 0.0024;
     globe.rotation.y += mouse.x * 0.025;
     globe.rotation.x = -0.18 + mouse.y * 0.55;
     globe.rotation.z = mouse.x * 0.18;
 
-    // pulsing markers
     markers.forEach((m, i) => {
       const ph = m.grp.userData.phase + t * 2;
       const s = 1 + (Math.sin(ph) * 0.5 + 0.5) * 1.4;
@@ -809,7 +805,6 @@ function buildGlobeScene() {
       m.grp.userData.ring.material.opacity = 0.7 - (s - 1) * 0.4;
     });
 
-    // arcs animation
     arcs.forEach((a) => {
       if (a.delay > 0) { a.delay -= 0.02; return; }
       a.t += 0.008;
@@ -846,7 +841,7 @@ function setupContactForm() {
   const btn = form.querySelector('button[type="submit"]');
 
   // reCAPTCHA v3 integration (grecaptcha.execute) — lazy loaded when contact form is visible
-  const RECAPTCHA_SITE_KEY = '6LcBF9ksAAAAAPSjhcoiHDZFYhumQU7ZfTm-Yfk9';
+  const RECAPTCHA_SITE_KEY = '6LeMPdksAAAAAOae8l_wKkJ3v6SUVlsPwgVUNCxn';
   let recaptchaReady = false;
 
   function loadReCaptcha() {
@@ -857,7 +852,6 @@ function setupContactForm() {
         if (window.grecaptcha && typeof window.grecaptcha.execute === 'function') {
           recaptchaReady = true; resolve(true); return;
         }
-        // small wait then check again (up to a short timeout)
       };
 
       const s = document.createElement('script');
@@ -867,12 +861,12 @@ function setupContactForm() {
       s.onerror = () => { resolve(null); };
       document.head.appendChild(s);
 
-      // Safety fallback: wait up to 5s for grecaptcha to become available
+      // Safety fallback: wait up to 6s for grecaptcha to become available
       const start = Date.now();
       const poll = () => {
         if (recaptchaReady) return;
         if (window.grecaptcha && typeof window.grecaptcha.execute === 'function') { recaptchaReady = true; resolve(true); return; }
-        if (Date.now() - start > 5000) { resolve(null); return; }
+        if (Date.now() - start > 6000) { resolve(null); return; }
         setTimeout(poll, 120);
       };
       poll();
@@ -1053,14 +1047,10 @@ function setupDocsCaptcha() {
     try { url = new URL(a.href, location.href); } catch (err) { return; }
     if (url.hostname !== DOC_HOST) return;
 
-    // Intercept and perform recaptcha check before navigation
     e.preventDefault();
-    // ensure grecaptcha script is loaded
     await loadReCaptcha().catch(() => null);
     const token = await getRecaptchaToken('docs_click').catch(() => null);
 
-    // Proceed with navigation regardless of token availability (fallback),
-    // but prefer to only navigate if a token was obtained.
     const target = a.target || '_self';
     const openLink = () => {
       if (target === '_blank') window.open(a.href, '_blank', 'noopener');
@@ -1070,7 +1060,6 @@ function setupDocsCaptcha() {
     if (token) {
       openLink();
     } else {
-      // small delay to avoid surprising UX; then open
       setTimeout(openLink, 250);
     }
   }, true);

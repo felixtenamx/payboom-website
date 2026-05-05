@@ -5,6 +5,28 @@
 
 declare(strict_types=1);
 
+// Auto-load .env from the project root (one directory up)
+$envFile = __DIR__ . '/../.env';
+if (file_exists($envFile)) {
+    $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if ($line === '' || str_starts_with($line, '#')) continue;
+        if (str_contains($line, '=')) {
+            [$key, $val] = explode('=', $line, 2);
+            $key = trim($key);
+            $val = trim($val);
+            // Strip optional surrounding quotes
+            if ((str_starts_with($val, '"') && str_ends_with($val, '"')) ||
+                (str_starts_with($val, "'") && str_ends_with($val, "'"))) {
+                $val = substr($val, 1, -1);
+            }
+            putenv("{$key}={$val}");
+            $_ENV[$key] = $val;
+        }
+    }
+}
+
 // Configuration
 $FORMSUBMIT_URL = 'https://formsubmit.co/ajax/comercial@payboom.io';
 $RATE_LIMIT_FILE = __DIR__ . '/ratelimit.json';
@@ -93,7 +115,6 @@ curl_setopt($verify, CURLOPT_POSTFIELDS, http_build_query([
 ]));
 $resp = curl_exec($verify);
 $err = curl_error($verify);
-curl_close($verify);
 if ($resp === false) {
   send_json(502, ['ok' => false, 'error' => 'recaptcha_unavailable', 'detail' => $err]);
 }
@@ -121,7 +142,6 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
 $forwardResp = curl_exec($ch);
 $forwardErr = curl_error($ch);
 $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-curl_close($ch);
 if ($forwardResp === false) {
   send_json(502, ['ok' => false, 'error' => 'forward_failed', 'detail' => $forwardErr]);
 }

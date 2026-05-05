@@ -18,14 +18,13 @@
   <pre id="out" style="white-space:pre-wrap;background:#111;color:#bfb;padding:12px;border-radius:6px;margin-top:12px"></pre>
 
   <script>
-    const SITE_KEY = '6LcBF9ksAAAAAPSjhcoiHDZFYhumQU7ZfTm-Yfk9';
+    const SITE_KEY = '6LeMPdksAAAAAOae8l_wKkJ3v6SUVlsPwgVUNCxn';
     const out = document.getElementById('out');
     const form = document.getElementById('testForm');
 
     function ensureReCaptcha() {
       return new Promise((resolve) => {
         if (window.grecaptcha && typeof grecaptcha.execute === 'function') return resolve(true);
-        // If a script is already present, poll until grecaptcha appears
         const existing = document.querySelector('script[data-recaptcha-test]');
         if (existing) {
           const start = Date.now();
@@ -38,13 +37,12 @@
         }
 
         const s = document.createElement('script');
-        // Use reCAPTCHA Enterprise client for enterprise keys
-        s.src = 'https://www.google.com/recaptcha/enterprise.js?render=' + SITE_KEY;
+        s.src = 'https://www.google.com/recaptcha/api.js?render=' + SITE_KEY;
         s.async = true; s.defer = true; s.setAttribute('data-recaptcha-test', '1');
         s.onload = () => {
           const start = Date.now();
           (function poll() {
-            if (window.grecaptcha && typeof grecaptcha.enterprise !== 'undefined' && typeof grecaptcha.enterprise.execute === 'function') return resolve(true);
+            if (window.grecaptcha && typeof grecaptcha.execute === 'function') return resolve(true);
             if (Date.now() - start > 8000) return resolve(false);
             setTimeout(poll, 100);
           })();
@@ -61,8 +59,7 @@
       if (!ok) { out.textContent = 'Could not load reCAPTCHA library. Check console/network.'; return; }
       out.textContent = 'Requesting token from grecaptcha...';
       try {
-        // Enterprise uses grecaptcha.enterprise.execute
-        const token = await (grecaptcha.enterprise ? grecaptcha.enterprise.execute(SITE_KEY, { action: 'contact_form' }) : grecaptcha.execute(SITE_KEY, { action: 'contact_form' }));
+        const token = await grecaptcha.execute(SITE_KEY, { action: 'contact_form' });
         out.textContent = 'Token received. Sending to /lead.php...\n\n' + token + '\n\n';
 
         const payload = {
@@ -73,7 +70,7 @@
           'g-recaptcha-response': token
         };
 
-        const res = await fetch('/lead.php', {
+        const res = await fetch('/server/lead.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
           body: JSON.stringify(payload)
