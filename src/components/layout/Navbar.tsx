@@ -2,6 +2,18 @@ import { useState, useEffect, useCallback } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { URLS } from '@/lib/constants'
 
+type NavLink = { label: string; to: string; external?: false }
+type ExternalLink = { label: string; href: string; external: true }
+type NavItem = NavLink | ExternalLink
+
+const navLinks: NavItem[] = [
+  { to: '/tarjetas', label: 'Tarjetas' },
+  { to: '/pagos-internacionales', label: 'Pagos internacionales' },
+  { to: '/antifraude', label: 'Antifraude' },
+  { href: URLS.docs, label: 'API', external: true },
+  { to: '/#contacto', label: 'Contacto' },
+]
+
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -18,6 +30,9 @@ export default function Navbar() {
 
   const closeMenu = useCallback(() => setMenuOpen(false), [])
 
+  const linkClass = "text-sm text-brand-text-muted hover:text-brand-text relative after:absolute after:-bottom-1.5 after:left-0 after:right-0 after:h-0.5 after:bg-gradient-to-r after:from-brand-orange after:to-brand-teal after:scale-x-0 after:transition-transform after:duration-300 after:origin-left hover:after:scale-x-100"
+  const mobileLinkClass = "text-brand-text-muted hover:text-brand-text transition-colors"
+
   return (
     <header className="fixed top-4 left-4 right-4 z-50 transition-all duration-300">
       <div
@@ -27,7 +42,7 @@ export default function Navbar() {
             : 'bg-[rgba(10,10,35,0.6)] border-white/8'
         }`}
       >
-        <Link to="/" className="inline-flex items-center gap-2 font-bold tracking-tight">
+        <Link to="/" className="inline-flex items-center gap-2 font-bold tracking-tight" onClick={closeMenu}>
           <svg viewBox="0 0 380 80" className="h-[26px] w-auto" role="img" aria-label="PAYBOOM">
             <g fontFamily="'Space Grotesk', system-ui, sans-serif" fontWeight="800" fontSize="72" letterSpacing="-1">
               <text x="0" y="62" fill="#f05215">PAY</text>
@@ -44,11 +59,10 @@ export default function Navbar() {
         </Link>
 
         <nav className="hidden lg:flex gap-7" aria-label="Principal">
-          <a href="/#productos" className="text-sm text-brand-text-muted hover:text-brand-text relative after:absolute after:-bottom-1.5 after:left-0 after:right-0 after:h-0.5 after:bg-gradient-to-r after:from-brand-orange after:to-brand-teal after:scale-x-0 after:transition-transform after:duration-300 after:origin-left hover:after:scale-x-100">Productos</a>
-          <a href="/#global" className="text-sm text-brand-text-muted hover:text-brand-text relative after:absolute after:-bottom-1.5 after:left-0 after:right-0 after:h-0.5 after:bg-gradient-to-r after:from-brand-orange after:to-brand-teal after:scale-x-0 after:transition-transform after:duration-300 after:origin-left hover:after:scale-x-100">Global</a>
-          <a href={URLS.docs} target="_blank" rel="noopener" className="text-sm text-brand-text-muted hover:text-brand-text relative after:absolute after:-bottom-1.5 after:left-0 after:right-0 after:h-0.5 after:bg-gradient-to-r after:from-brand-orange after:to-brand-teal after:scale-x-0 after:transition-transform after:duration-300 after:origin-left hover:after:scale-x-100">API</a>
-          <a href="/#seguridad" className="text-sm text-brand-text-muted hover:text-brand-text relative after:absolute after:-bottom-1.5 after:left-0 after:right-0 after:h-0.5 after:bg-gradient-to-r after:from-brand-orange after:to-brand-teal after:scale-x-0 after:transition-transform after:duration-300 after:origin-left hover:after:scale-x-100">Seguridad</a>
-          <a href="/#contacto" className="text-sm text-brand-text-muted hover:text-brand-text relative after:absolute after:-bottom-1.5 after:left-0 after:right-0 after:h-0.5 after:bg-gradient-to-r after:from-brand-orange after:to-brand-teal after:scale-x-0 after:transition-transform after:duration-300 after:origin-left hover:after:scale-x-100">Contacto</a>
+          {navLinks.map((link) => {
+              if (link.external) return <a key={link.label} href={link.href} target="_blank" rel="noopener" className={linkClass}>{link.label}</a>
+              return <Link key={link.label} to={link.to} className={linkClass}>{link.label}</Link>
+            })}
         </nav>
 
         <div className="hidden lg:flex gap-2 items-center">
@@ -59,6 +73,7 @@ export default function Navbar() {
         <button
           className="lg:hidden flex flex-col gap-1.5 p-2"
           aria-label="Menú"
+          aria-expanded={menuOpen}
           onClick={() => setMenuOpen(!menuOpen)}
         >
           <span className={`block w-[22px] h-0.5 bg-brand-text rounded transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-1.5' : ''}`} />
@@ -70,15 +85,14 @@ export default function Navbar() {
       {menuOpen && (
         <div className="lg:hidden mx-auto mt-2 p-5 bg-[rgba(10,10,35,0.95)] border border-white/14 rounded-[20px] backdrop-blur-[20px]">
           <nav className="flex flex-col gap-4 mb-6">
-            <a href="/#productos" onClick={closeMenu} className="text-brand-text-muted hover:text-brand-text transition-colors">Productos</a>
-            <a href="/#global" onClick={closeMenu} className="text-brand-text-muted hover:text-brand-text transition-colors">Global</a>
-            <a href={URLS.docs} target="_blank" rel="noopener" onClick={closeMenu} className="text-brand-text-muted hover:text-brand-text transition-colors">API</a>
-            <a href="/#seguridad" onClick={closeMenu} className="text-brand-text-muted hover:text-brand-text transition-colors">Seguridad</a>
-            <a href="/#contacto" onClick={closeMenu} className="text-brand-text-muted hover:text-brand-text transition-colors">Contacto</a>
+            {navLinks.map((link) => {
+              if (link.external) return <a key={link.label} href={link.href} target="_blank" rel="noopener" onClick={closeMenu} className={mobileLinkClass}>{link.label}</a>
+              return <Link key={link.label} to={link.to} onClick={closeMenu} className={mobileLinkClass}>{link.label}</Link>
+            })}
           </nav>
           <div className="flex flex-col gap-2">
-            <a href={URLS.onboarding} target="_blank" rel="noopener" className="btn-glass text-center px-5 py-3 rounded-full text-sm font-medium transition-all">Iniciar sesión</a>
-            <a href={URLS.whatsapp} target="_blank" rel="noopener" className="btn-grad text-center px-6 py-3 rounded-full text-sm font-semibold text-white transition-transform">Empezar gratis</a>
+            <a href={URLS.onboarding} target="_blank" rel="noopener" onClick={closeMenu} className="btn-glass text-center px-5 py-3 rounded-full text-sm font-medium transition-all">Iniciar sesión</a>
+            <a href={URLS.whatsapp} target="_blank" rel="noopener" onClick={closeMenu} className="btn-grad text-center px-6 py-3 rounded-full text-sm font-semibold text-white transition-transform">Empezar gratis</a>
           </div>
         </div>
       )}

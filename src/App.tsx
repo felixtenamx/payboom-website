@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import RootLayout from '@/layouts/RootLayout'
 import LegalLayout from '@/layouts/LegalLayout'
 import Home from '@/pages/Home'
@@ -34,6 +34,8 @@ export default function App() {
             <Route path="cookies" element={<Cookies />} />
             <Route path="licencias" element={<Licencias />} />
           </Route>
+          <Route path="index.html" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
     </Suspense>
