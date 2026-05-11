@@ -31,10 +31,12 @@ build/
 out/
 
 # Variables de entorno (nunca commitear secretos)
-.env
 .env.local
 .env.*.local
 .env.development.local
+
+# Server
+server/node_modules/
 
 #php keys
 config.php
