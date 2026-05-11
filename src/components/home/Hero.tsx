@@ -8,10 +8,10 @@ export default function Hero() {
   return (
     <section className="pt-[160px] pb-20 relative">
       <div className="w-full max-w-[1200px] mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-15 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-15 items-center">
           <div className="hero__content">
             <Badge>Nueva infraestructura · 2026</Badge>
-            <h1 className="text-[clamp(40px,6.4vw,84px)] leading-[0.98] tracking-[-0.04em] font-semibold mb-6">
+            <h1 className="text-[clamp(36px,6.4vw,84px)] leading-[0.98] tracking-[-0.04em] font-semibold mb-6 max-sm:text-[clamp(32px,10vw,48px)]">
               Pagos<br />
               <span className="grad-text">sin fronteras</span><br />
               a la velocidad de tu API.
@@ -29,7 +29,7 @@ export default function Hero() {
                 Ver la API
               </a>
             </div>
-            <div className="flex gap-10 pt-8 border-t border-white/8">
+            <div className="flex gap-6 lg:gap-10 pt-6 lg:pt-8 border-t border-white/8 flex-wrap">
               <div className="flex flex-col">
                 <strong className="text-[28px] font-semibold tracking-tight grad-text">100+</strong>
                 <span className="text-[13px] text-brand-text-dim">países</span>

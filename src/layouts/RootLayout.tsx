@@ -26,9 +26,9 @@ export default function RootLayout() {
       <div className="orb orb-3" />
 
       <Navbar />
-      <main>
-        <Outlet />
-      </main>
+      <main className="relative z-10">
+          <Outlet />
+        </main>
       <Footer />
       <CookieBanner />
     </>

@@ -5,8 +5,8 @@ export default function Footer() {
   return (
     <footer className="pt-20 pb-8 mt-16 border-t border-white/8 relative">
       <div className="w-full max-w-[1200px] mx-auto px-6">
-        <div className="grid grid-cols-2 md:grid-cols-[1.4fr_1fr_1fr_1fr_1fr] gap-10 mb-16">
-          <div className="col-span-2 md:col-span-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr] gap-8 lg:gap-10 mb-16">
+          <div className="col-span-2 lg:col-span-1">
             <Link to="/" className="inline-flex items-center gap-2.5 font-bold tracking-tight">
               <svg viewBox="0 0 380 80" className="h-8 w-auto" role="img" aria-label="PAYBOOM">
                 <g fontFamily="'Space Grotesk', system-ui, sans-serif" fontWeight="800" fontSize="72" letterSpacing="-1">

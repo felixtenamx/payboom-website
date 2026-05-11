@@ -19,7 +19,7 @@ export default function Navbar() {
   const closeMenu = useCallback(() => setMenuOpen(false), [])
 
   return (
-    <header className="fixed top-4 left-0 right-0 z-50 transition-all duration-300">
+    <header className="fixed top-4 left-4 right-4 z-50 transition-all duration-300">
       <div
         className={`mx-auto flex items-center justify-between px-4 sm:px-6 py-3 max-w-[1200px] rounded-full border transition-all duration-300 backdrop-blur-[20px] ${
           scrolled
@@ -27,7 +27,7 @@ export default function Navbar() {
             : 'bg-[rgba(10,10,35,0.6)] border-white/8'
         }`}
       >
-        <Link to="/" className="inline-flex items-center gap-2.5 font-bold tracking-tight">
+        <Link to="/" className="inline-flex items-center gap-2 font-bold tracking-tight">
           <svg viewBox="0 0 380 80" className="h-[26px] w-auto" role="img" aria-label="PAYBOOM">
             <g fontFamily="'Space Grotesk', system-ui, sans-serif" fontWeight="800" fontSize="72" letterSpacing="-1">
               <text x="0" y="62" fill="#f05215">PAY</text>
@@ -68,7 +68,7 @@ export default function Navbar() {
       </div>
 
       {menuOpen && (
-        <div className="lg:hidden mx-4 mt-2 p-5 bg-[rgba(10,10,35,0.95)] border border-white/14 rounded-[20px] backdrop-blur-[20px]">
+        <div className="lg:hidden mx-auto mt-2 p-5 bg-[rgba(10,10,35,0.95)] border border-white/14 rounded-[20px] backdrop-blur-[20px]">
           <nav className="flex flex-col gap-4 mb-6">
             <a href="/#productos" onClick={closeMenu} className="text-brand-text-muted hover:text-brand-text transition-colors">Productos</a>
             <a href="/#global" onClick={closeMenu} className="text-brand-text-muted hover:text-brand-text transition-colors">Global</a>

@@ -54,7 +54,7 @@ export default function PagosInternacionales() {
             </p>
           </div>
 
-          <div className="relative flow-card rounded-3xl p-9 overflow-hidden mb-12">
+          <div className="relative flow-card rounded-3xl p-5 sm:p-9 overflow-hidden mb-12">
             <svg className="w-full h-auto block relative z-10" viewBox="0 0 1100 360" preserveAspectRatio="xMidYMid meet">
               <defs>
                 <linearGradient id="gIntl" x1="0" x2="1" y1="0" y2="0">
