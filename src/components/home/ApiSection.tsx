@@ -14,7 +14,7 @@ export default function ApiSection() {
             <p className="text-brand-text-muted text-[17px] max-w-[620px]">
               REST, idempotencia real, webhooks firmados con HMAC y un sandbox que se comporta como producción. Empieza a cobrar en una tarde.
             </p>
-            <div className="grid grid-cols-2 gap-4 my-7">
+            <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-4 my-7">
               <div className="p-[18px_20px] bg-white/4 border border-white/8 rounded-xl flex flex-col gap-1 text-sm text-brand-text-muted">
                 <strong className="text-2xl font-semibold grad-text">200 ms</strong>
                 Latencia media de autorización

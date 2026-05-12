@@ -45,21 +45,24 @@ export default function Hero() {
             </div>
           </div>
 
-          <div className="relative h-[560px] max-lg:h-[440px] max-sm:h-[360px] lg:order-none -order-1">
+          <div className="relative min-h-[260px] h-[360px] sm:h-[400px] lg:h-[560px] lg:order-none -order-1">
             <Suspense fallback={<div className="w-full h-full bg-white/4 rounded-[20px]" />}>
               <FloatingCard />
             </Suspense>
-            <div className="absolute top-[10%] left-[5%] inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-[rgba(10,10,35,0.7)] border border-white/16 text-[13px] text-brand-text backdrop-blur-[12px] shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] animate-float-chip">
-              <svg viewBox="0 0 24 24" width="18" height="18"><path d="M2 7h20v10H2z" fill="#FFD700" opacity=".15"/><path d="M2 7h20v10H2z" stroke="#FFD700" strokeWidth="1.5" fill="none"/><path d="M7 7v10M17 7v10M2 12h20" stroke="#FFD700" strokeWidth="1.5"/></svg>
-              <span>Tap to Pay</span>
-            </div>
-            <div className="absolute top-[50%] right-0 inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-[rgba(10,10,35,0.7)] border border-white/16 text-[13px] text-brand-text backdrop-blur-[12px] shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] animate-float-chip" style={{ animationDelay: '-1.6s' }}>
-              <svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="9" fill="none" stroke="#049ea0" strokeWidth="1.5"/><path d="M8 12l3 3 5-6" fill="none" stroke="#049ea0" strokeWidth="2"/></svg>
-              <span>3D Secure 2</span>
-            </div>
-            <div className="absolute bottom-[12%] left-[10%] inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-[rgba(10,10,35,0.7)] border border-white/16 text-[13px] text-brand-text backdrop-blur-[12px] shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] animate-float-chip" style={{ animationDelay: '-3.2s' }}>
-              <svg viewBox="0 0 24 24" width="18" height="18"><path d="M4 7h16v10H4z" fill="none" stroke="#f05215" strokeWidth="1.5"/><path d="M4 11h16" stroke="#f05215" strokeWidth="1.5"/></svg>
-              <span>Settlement T+1</span>
+            {/* Floating chips — hidden below 360px to prevent overlap */}
+            <div className="hidden min-[360px]:contents">
+              <div className="absolute top-[10%] left-[5%] inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-[rgba(10,10,35,0.7)] border border-white/16 text-[13px] text-brand-text backdrop-blur-[12px] shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] animate-float-chip">
+                <svg viewBox="0 0 24 24" width="18" height="18"><path d="M2 7h20v10H2z" fill="#FFD700" opacity=".15"/><path d="M2 7h20v10H2z" stroke="#FFD700" strokeWidth="1.5" fill="none"/><path d="M7 7v10M17 7v10M2 12h20" stroke="#FFD700" strokeWidth="1.5"/></svg>
+                <span>Tap to Pay</span>
+              </div>
+              <div className="absolute top-[50%] right-0 inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-[rgba(10,10,35,0.7)] border border-white/16 text-[13px] text-brand-text backdrop-blur-[12px] shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] animate-float-chip" style={{ animationDelay: '-1.6s' }}>
+                <svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="9" fill="none" stroke="#049ea0" strokeWidth="1.5"/><path d="M8 12l3 3 5-6" fill="none" stroke="#049ea0" strokeWidth="2"/></svg>
+                <span>3D Secure 2</span>
+              </div>
+              <div className="absolute bottom-[12%] left-[10%] inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-[rgba(10,10,35,0.7)] border border-white/16 text-[13px] text-brand-text backdrop-blur-[12px] shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] animate-float-chip" style={{ animationDelay: '-3.2s' }}>
+                <svg viewBox="0 0 24 24" width="18" height="18"><path d="M4 7h16v10H4z" fill="none" stroke="#f05215" strokeWidth="1.5"/><path d="M4 11h16" stroke="#f05215" strokeWidth="1.5"/></svg>
+                <span>Settlement T+1</span>
+              </div>
             </div>
           </div>
         </div>

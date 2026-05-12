@@ -18,7 +18,7 @@ export default function GlobeSection() {
               Conecta corredores entre regiones, acepta el método local que tus clientes usan a diario y recibe en tu moneda — sin fricción, sin intermediarios opacos.
             </p>
 
-            <div className="grid grid-cols-2 gap-[18px] my-7">
+            <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-[18px] my-7">
               {METRICS.map((m) => (
                 <Counter key={m.label} target={m.value} label={m.label} />
               ))}
@@ -33,7 +33,7 @@ export default function GlobeSection() {
             </div>
           </div>
 
-          <div className="relative h-[560px] max-lg:h-[440px] max-sm:h-[360px] lg:order-none -order-1">
+          <div className="relative min-h-[260px] h-[360px] sm:h-[400px] lg:h-[560px] lg:order-none -order-1">
             <Suspense fallback={<div className="w-full h-full bg-white/4 rounded-[20px]" />}>
               <PaymentGlobe />
             </Suspense>

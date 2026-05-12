@@ -92,7 +92,7 @@ export default function ProductCard({ icon, title, description, items, href, ext
     </>
   )
 
-  const className = "group relative p-8 card-glass rounded-[20px] block cursor-pointer"
+  const className = "group relative p-8 card-glass rounded-[20px] block cursor-pointer touch-manipulation"
 
   if (external) {
     return (

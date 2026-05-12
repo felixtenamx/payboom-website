@@ -26,6 +26,9 @@
   --animate-float-chip: floatChip 5s ease-in-out infinite;
   --animate-cookie-in: cookieIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
   --animate-dash-move: dashMove 2.2s linear infinite;
+  --animate-drawer-backdrop-in: drawerBackdropIn 0.25s ease-out both;
+  --animate-drawer-panel-in: drawerPanelIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-drawer-item-in: drawerItemIn 0.35s ease-out both;
 }
 
 @keyframes float {
@@ -57,6 +60,21 @@
   to { stroke-dashoffset: -56; }
 }
 
+@keyframes drawerBackdropIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes drawerPanelIn {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+@keyframes drawerItemIn {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
 *,
 *::before,
 *::after {
@@ -78,7 +96,12 @@ body {
   overflow-x: hidden;
   position: relative;
   min-height: 100vh;
+  min-height: 100dvh;
 }
+
+/* Safe-area insets for iOS notch / Dynamic Island */
+.pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+.pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
 
 img, svg, canvas {
   display: block;
@@ -236,4 +259,69 @@ ul {
   border: none; height: 1px;
   background: rgba(255,255,255,0.08);
   margin: 32px 0;
+}
+
+/* ── Z-index system ── */
+:root {
+  --z-bg: 0;
+  --z-content: 10;
+  --z-header: 50;
+  --z-overlay: 90;
+  --z-drawer: 95;
+  --z-banner: 100;
+  --z-tooltip: 110;
+}
+
+/* ── Skeleton loader ── */
+@keyframes skeletonPulse {
+  0%, 100% { opacity: 0.2; }
+  50%      { opacity: 0.4; }
+}
+.skeleton {
+  background: rgba(255,255,255,0.06);
+  border-radius: 8px;
+  animation: skeletonPulse 1.6s ease-in-out infinite;
+}
+
+/* ── Print styles (legal pages, receipts) ── */
+@media print {
+  .noise, .grid-bg, .orb,
+  nav, header, footer,
+  .cookie-banner,
+  button:not(.print-keep),
+  canvas, video, iframe {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  a {
+    color: #049ea0;
+    text-decoration: underline;
+  }
+
+  main {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  h1, h2, h3, h4 {
+    color: #000 !important;
+    page-break-after: avoid;
+  }
+
+  .legal-prose {
+    max-width: 100% !important;
+  }
+}
+
+/* ── Dark mode preparation (CSS custom properties layer) ── */
+@media (prefers-color-scheme: dark) {
+  /* Theme already defaults to dark; this block is prepared
+     for a future light-mode toggle via class strategy. */
 }
