@@ -31,6 +31,7 @@ build/
 out/
 
 # Variables de entorno (nunca commitear secretos)
+.env
 .env.local
 .env.*.local
 .env.development.local
@@ -46,3 +47,4 @@ config.example.php
 .tmp/
 tmp/
 .deepseek
+.deepseek/
