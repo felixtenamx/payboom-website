@@ -2,7 +2,7 @@ import ContactForm from '@/components/contact/ContactForm'
 
 export default function ContactSection() {
   return (
-    <section id="contacto" className="py-25 relative">
+    <section id="contacto" className="py-[100px] relative">
       <div className="w-full max-w-[1200px] mx-auto px-6">
         <div className="relative text-center p-10 sm:p-16 lg:p-20 bg-[radial-gradient(ellipse_at_center,rgba(240,82,21,0.18),rgba(4,158,160,0.10)_60%,transparent)] border border-white/16 rounded-[24px] sm:rounded-[32px] overflow-hidden">
           <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(400px_circle_at_20%_30%,rgba(240,82,21,0.45),transparent_50%),radial-gradient(400px_circle_at_80%_70%,rgba(4,158,160,0.4),transparent_50%)] opacity-80" />

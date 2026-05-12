@@ -3,9 +3,9 @@ import { URLS } from '@/lib/constants'
 
 export default function ApiSection() {
   return (
-    <section id="api" className="py-30 relative">
+    <section id="api" className="py-[120px] relative">
       <div className="w-full max-w-[1200px] mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-10 lg:gap-15 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-10 lg:gap-[60px] items-center">
           <div>
             <span className="inline-block text-[13px] tracking-[0.18em] uppercase text-brand-teal-light font-semibold mb-3.5">Para developers</span>
             <h2 className="text-[clamp(32px,4.5vw,56px)] leading-[1.05] tracking-[-0.03em] font-semibold mb-[18px]">

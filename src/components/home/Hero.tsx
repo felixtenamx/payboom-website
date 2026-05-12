@@ -8,7 +8,7 @@ export default function Hero() {
   return (
     <section className="pt-[160px] pb-20 relative">
       <div className="w-full max-w-[1200px] mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-15 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-[60px] items-center">
           <div className="hero__content">
             <Badge>Nueva infraestructura · 2026</Badge>
             <h1 className="text-[clamp(36px,6.4vw,84px)] leading-[0.98] tracking-[-0.04em] font-semibold mb-6 max-sm:text-[clamp(32px,10vw,48px)]">
@@ -47,7 +47,7 @@ export default function Hero() {
 
           <div className="relative min-h-[260px] h-[360px] sm:h-[400px] lg:h-[560px] lg:order-none -order-1">
             <Suspense fallback={<div className="w-full h-full bg-white/4 rounded-[20px]" />}>
-              <FloatingCard />
+              <FloatingCard className="w-full h-full" />
             </Suspense>
             {/* Floating chips — hidden below 360px to prevent overlap */}
             <div className="hidden min-[360px]:contents">
@@ -67,7 +67,7 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="mt-25 text-center">
+        <div className="mt-[100px] text-center">
           <p className="text-[13px] text-brand-text-dim tracking-[0.1em] uppercase mb-6">Confían en Payboom equipos de</p>
           <div className="flex flex-wrap gap-12 justify-center items-center opacity-70">
             <span className="font-bold text-lg tracking-[0.05em] text-brand-text-muted">NEXORA</span>

@@ -6,9 +6,9 @@ const PaymentGlobe = lazy(() => import('@/components/three/PaymentGlobe'))
 
 export default function GlobeSection() {
   return (
-    <section id="global" className="py-30 relative section-alt">
+    <section id="global" className="py-[120px] relative section-alt">
       <div className="w-full max-w-[1200px] mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-10 lg:gap-15 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-10 lg:gap-[60px] items-center">
           <div>
             <span className="inline-block text-[13px] tracking-[0.18em] uppercase text-brand-teal-light font-semibold mb-3.5">Cobertura global</span>
             <h2 className="text-[clamp(32px,4.5vw,56px)] leading-[1.05] tracking-[-0.03em] font-semibold mb-[18px]">
@@ -35,7 +35,7 @@ export default function GlobeSection() {
 
           <div className="relative min-h-[260px] h-[360px] sm:h-[400px] lg:h-[560px] lg:order-none -order-1">
             <Suspense fallback={<div className="w-full h-full bg-white/4 rounded-[20px]" />}>
-              <PaymentGlobe />
+              <PaymentGlobe className="w-full h-full" />
             </Suspense>
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-[18px] px-4 py-2 bg-[rgba(10,10,35,0.7)] border border-white/16 rounded-full backdrop-blur-[12px] text-[13px] text-brand-text-muted">
               <span><i className="inline-block w-2 h-2 rounded-full mr-1.5 align-middle bg-brand-orange shadow-[0_0_8px_var(--color-brand-orange)]" />Origen</span>

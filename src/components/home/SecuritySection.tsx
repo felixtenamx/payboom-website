@@ -11,7 +11,7 @@ const badges = [
 
 export default function SecuritySection() {
   return (
-    <section id="seguridad" className="py-30 relative section-alt">
+    <section id="seguridad" className="py-[120px] relative section-alt">
       <div className="w-full max-w-[1200px] mx-auto px-6">
         <div className="max-w-[720px] mx-auto text-center mb-16">
           <span className="inline-block text-[13px] tracking-[0.18em] uppercase text-brand-teal-light font-semibold mb-3.5">Seguridad</span>

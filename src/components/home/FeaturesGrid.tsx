@@ -38,7 +38,7 @@ const products = [
 
 export default function FeaturesGrid() {
   return (
-    <section id="productos" className="py-30 relative">
+    <section id="productos" className="py-[120px] relative">
       <div className="w-full max-w-[1200px] mx-auto px-6">
         <div className="max-w-[720px] mb-16">
           <span className="inline-block text-[13px] tracking-[0.18em] uppercase text-brand-teal-light font-semibold mb-3.5">Productos</span>
