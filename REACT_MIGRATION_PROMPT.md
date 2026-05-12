@@ -30,9 +30,7 @@ The existing codebase is at: https://github.com/felixtenamx/payboom-website/tree
 1. **3D Floating Credit Card** (Three.js) — Hero section, interactive card with animated particles and orbiting symbols, mouse parallax
 2. **3D Globe** (Three.js) — International payments section, dot-mapped continents with city markers, animated transaction arcs
 3. **Contact Form** — POST to a serverless endpoint (AWS Amplify function or Express backend) with reCAPTCHA v3 token, rate limiting, sanitization, forwarding to formsubmit.co
-4. **reCAPTCHA v3** — Standard v3 (not Enterprise), keys are already configured:
-   - Site key: `6LeMPdksAAAAAOae8l_wKkJ3v6SUVlsPwgVUNCxn`
-   - Secret: `6LeMPdksAAAAAF5RXe0q7eQkcw1XGz8t9Zwg-CZn`
+4. **reCAPTCHA v3** — Standard v3 (not Enterprise). Keys are stored in `.env` (NOT committed to repo). See `server/lead.js` for the serverless backend function that uses the secret key via `process.env.RECAPTCHA_SECRET`.
    - The PHP backend `server/lead.php` must be replaced — see "Backend Replacement" section below
 5. **Cookie Consent Banner** — LocalStorage-based accept/reject
 6. **Scroll Reveal Animations** — IntersectionObserver-based reveal-on-scroll
@@ -93,7 +91,7 @@ Create an AWS Amplify Function or use a simple Express server deployed alongside
 - Less control over rate limiting and validation
 - Can use a simple Netlify/Vercel serverless function or AWS Lambda@Edge
 
-**Important**: The reCAPTCHA secret key (`6LeMPdksAAAAAF5RXe0q7eQkcw1XGz8t9Zwg-CZn`) must NEVER be exposed client-side. It must live in a serverless function or backend environment variable.
+**Important**: The reCAPTCHA secret key stored in `.env` must NEVER be exposed client-side. It must live in a serverless function or backend environment variable. The `.env` file is listed in `.gitignore` and should NOT be committed.
 
 ## Component structure to aim for
 
