@@ -45,3 +45,4 @@ config.example.php
 # Carpetas temporales
 .tmp/
 tmp/
+.deepseek
