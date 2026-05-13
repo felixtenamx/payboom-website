@@ -1,7 +1,0 @@
-{
-  "name": "payboom/recaptcha-server",
-  "description": "Server helpers for verifying reCAPTCHA Enterprise tokens and forwarding leads",
-  "require": {
-    "google/cloud-recaptcha-enterprise": "^1.0"
-  }
-}
