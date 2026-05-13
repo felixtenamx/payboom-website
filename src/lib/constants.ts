@@ -1,4 +1,4 @@
-export const RECAPTCHA_SITE_KEY = '6LeMPdksAAAAAOae8l_wKkJ3v6SUVlsPwgVUNCxn'
+export const RECAPTCHA_SITE_KEY = '6LcsjugsAAAAADzg2Jv5OO6n3oIdf7nPBUJVvIa_'
 export const GTM_ID = 'GTM-5367GCDJ'
 export const COOKIE_KEY = 'payboom_cookies_v1'
 
