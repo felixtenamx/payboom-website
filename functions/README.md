@@ -5,7 +5,7 @@ Serverless function: verify reCAPTCHA v3, rate-limit, forward to formsubmit.co.
 ## Local development
 
 ```bash
-export RECAPTCHA_SECRET="6LeMPdksAAAAAF5RXe0q7eQkcw1XGz8t9Zwg-CZn"
+export RECAPTCHA_SECRET="<TU_RECAPTCHA_SECRET>"
 node functions/dev-server.mjs   # port 3001
 npm run dev                      # Vite on 5173, proxies /api -> 3001
 ```

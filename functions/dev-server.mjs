@@ -4,8 +4,14 @@
  * Listens on port 3001 (matches Vite proxy).
  */
 
+// Dev defaults — set BEFORE importing lead.mjs so it picks them up
+process.env.RATE_LIMIT_MAX = process.env.RATE_LIMIT_MAX || '100'
+process.env.RATE_LIMIT_WINDOW = process.env.RATE_LIMIT_WINDOW || '60'
+
 import { createServer } from 'node:http'
-import { handler } from './lead.mjs'
+
+// Dynamic import so the env vars above are already set when lead.mjs runs
+const { handler } = await import('./lead.mjs')
 
 const PORT = parseInt(process.env.PORT || '3001', 10)
 

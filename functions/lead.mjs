@@ -31,7 +31,7 @@ export async function handler(event) {
   try { body = JSON.parse(event.body || '{}') } catch { return json({ ok: false, error: 'invalid_json' }, 400) }
   const token = String(body['g-recaptcha-response'] || '').trim()
   if (!token) return json({ ok: false, error: 'missing_token' }, 400)
-  const ip = event.requestContext?.identity?.sourceIp || event.headers?['x-forwarded-for']?.split(',')[0]?.trim() || 'unknown'
+  const ip = event.requestContext?.identity?.sourceIp || event.headers?.['x-forwarded-for']?.split(',')[0]?.trim() || 'unknown'
   if (!rateLimit(ip)) return json({ ok: false, error: 'rate_limited' }, 429)
   if (!RECAPTCHA_SECRET) { console.error('[lead] RECAPTCHA_SECRET not set'); return json({ ok: false, error: 'server_misconfigured' }, 500) }
 
