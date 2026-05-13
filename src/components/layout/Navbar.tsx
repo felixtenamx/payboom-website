@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { URLS } from '@/lib/constants'
+import navLogo from '@/assets/navLogo.png'
 
 type NavLink = { label: string; to: string; external?: false }
 type ExternalLink = { label: string; href: string; external: true }
@@ -43,19 +44,7 @@ export default function Navbar() {
         }`}
       >
         <Link to="/" className="inline-flex items-center gap-2 font-bold tracking-tight" onClick={closeMenu}>
-          <svg viewBox="0 0 380 80" className="h-[26px] w-auto" role="img" aria-label="PAYBOOM">
-            <g fontFamily="'Space Grotesk', system-ui, sans-serif" fontWeight="800" fontSize="72" letterSpacing="-1">
-              <text x="0" y="62" fill="#f05215">PAY</text>
-              <text x="160" y="62" fill="#049ea0">B</text>
-              <text x="318" y="62" fill="#049ea0">M</text>
-            </g>
-            <g transform="translate(206 14)">
-              <rect x="0" y="0" width="118" height="52" rx="26" ry="26" fill="#049ea0"/>
-              <circle cx="30" cy="26" r="14" fill="#ffffff"/>
-              <circle cx="74" cy="26" r="14" fill="#ffffff"/>
-              <circle cx="98" cy="34" r="4.5" fill="#ffffff"/>
-            </g>
-          </svg>
+          <img src={navLogo} alt="PAYBOOM" className="h-[26px] w-auto" />
         </Link>
 
         <nav className="hidden lg:flex gap-7" aria-label="Principal">
