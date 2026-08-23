@@ -38,3 +38,6 @@ out/
 # Carpetas temporales
 .tmp/
 tmp/
+
+# Copias en conflicto que deja iCloud.
+* [0-9].*
